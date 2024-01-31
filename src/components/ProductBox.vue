@@ -3,10 +3,10 @@
     <img
       class="w-full h-48 object-cover object-center rounded-t-lg"
       :src="product.imageURL"
-      :alt="product.categoryName"
+      :alt="product.name"
     />
     <div class="p-6">
-      <h2 class="text-2xl font-semibold mb-2">{{ product.categoryName }}</h2>
+      <h2 class="text-2xl font-semibold mb-2">{{ product.name }}</h2>
       <p class="text-gray-700">{{ product.description }}</p>
       <div class="mt-4">
         <p class="text-gray-700 font-semibold">Price: ${{ product.price }}</p>
