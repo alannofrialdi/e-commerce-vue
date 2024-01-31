@@ -1,28 +1,55 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <nav class="bg-slate-800 w-full">
+      <NavBar />
+    </nav>
+    <router-view
+      :categories="categories"
+      :endpoint="endpoint"
+      :products="products"
+    />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import axios from "axios";
+import NavBar from "./components/NavBar.vue";
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  components: { NavBar },
+  data() {
+    return {
+      endpoint: "https://limitless-lake-55070.herokuapp.com/",
+      products: [],
+      categories: [],
+    };
+  },
+  methods: {
+    async fetchData() {
+      try {
+        const categoryResponse = await axios.get(this.endpoint + "category/");
+        this.categories = categoryResponse.data;
+
+        const productsResponse = await axios.get(this.endpoint + "product/");
+        this.products = productsResponse.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    },
+  },
+  mounted() {
+    this.fetchData();
+  },
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style scoped>
+nav {
+  margin-bottom: 4rem;
+}
+
+@media (max-width: 768px) {
+  nav {
+    margin-bottom: 8rem;
+  }
 }
 </style>
