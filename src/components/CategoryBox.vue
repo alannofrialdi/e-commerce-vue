@@ -8,15 +8,26 @@
     <div class="p-6">
       <h2 class="text-2xl font-semibold mb-2">{{ category.categoryName }}</h2>
       <p class="text-gray-700">{{ category.description }}</p>
-      <div class="mt-4">
-        <p
-          v-if="category.products.length > 0"
-          class="text-gray-700 font-semibold"
+      <button class="button flex gap-3">
+        <router-link
+          :to="{ name: 'edit-category', params: { id: category.id } }"
+          ><button
+            type="button"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 focus:outline-none focus:shadow-outline"
+          >
+            Edit
+          </button></router-link
         >
-          Price: ${{ category.products[0].price }}
-        </p>
-        <p v-else class="text-gray-700">No products available</p>
-      </div>
+        <router-link
+          :to="{ name: 'detail-category', params: { id: category.id } }"
+          ><button
+            type="button"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2 focus:outline-none focus:shadow-outline"
+          >
+            Detail
+          </button></router-link
+        >
+      </button>
     </div>
   </div>
 </template>

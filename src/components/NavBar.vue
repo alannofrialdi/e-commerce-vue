@@ -1,11 +1,8 @@
 <template>
-  <div class="navbar p-6 flex justify-between items-center">
+  <div class="navbar bg-slate-800 p-6 flex justify-between items-center">
     <div class="router flex gap-4">
-      <router-link to="/" class="text-white hover:text-slate-400"
+      <router-link to="/" class="text-white hover:text-blue-400"
         >Home</router-link
-      >
-      <router-link to="/about" class="text-white hover:text-slate-400"
-        >About</router-link
       >
       <div class="container mx-auto">
         <div
@@ -13,7 +10,7 @@
         >
           <button
             ref="adminButton"
-            class="text-slate-800 flex items-center"
+            class="text-slate-900 flex items-center"
             @click="isClicked = !isClicked"
           >
             <span>Admin</span>
@@ -44,12 +41,12 @@
           >
             <router-link
               to="/admin/category"
-              class="text-slate-800 hover:text-slate-400 block p-3 border-b border-gray-300"
+              class="text-slate-800 hover:text-blue-400 block p-3 border-b border-gray-300"
               >Category</router-link
             >
             <router-link
               to="/admin/product"
-              class="text-slate-800 hover:text-slate-400 block p-3 border-b border-gray-300"
+              class="text-slate-800 hover:text-blue-400 block p-3 border-b border-gray-300"
               >Product</router-link
             >
           </div>
@@ -65,6 +62,34 @@
         />
       </div>
     </div>
+    <div class="text-white flex gap-2">
+      <router-link
+        :to="{ name: 'user-signup' }"
+        v-if="!token"
+        class="hover:text-blue-400"
+        >Sign Up</router-link
+      >
+      <router-link
+        :to="{ name: 'user-signin' }"
+        v-if="!token"
+        class="hover:text-blue-400"
+        >Sign In</router-link
+      >
+
+      <router-link
+        :to="{ name: 'wishlist' }"
+        v-if="token && loggedIn"
+        class="hover:text-blue-400"
+        >Wishlist</router-link
+      >
+      <button
+        v-if="token && loggedIn"
+        @click="logout"
+        class="hover:text-blue-400"
+      >
+        Logout
+      </button>
+    </div>
   </div>
 </template>
 
@@ -72,7 +97,9 @@
 export default {
   data() {
     return {
+      token: (this.token = localStorage.getItem("token")),
       isClicked: false,
+      loggedIn: true,
     };
   },
   methods: {
@@ -83,7 +110,7 @@ export default {
       const menu = this.$refs.menu;
       const adminButton = this.$refs.adminButton;
 
-      // Periksa apakah klik terjadi di luar dropdown admin
+      // Check click diluar button admin
       if (
         menu &&
         !menu.contains(event.target) &&
@@ -92,21 +119,28 @@ export default {
         this.isClicked = false;
       }
     },
+    logout() {
+      localStorage.removeItem("token");
+      this.loggedIn = false;
+      this.$router.go();
+      return;
+    },
   },
   mounted() {
-    // Add event listener to close dropdown when clicked outside
     document.body.addEventListener("click", this.closeMenu);
   },
   beforeDestroy() {
-    // Remove event listener before component is destroyed
+    this.logout();
+  },
+  destroyed() {
     document.body.removeEventListener("click", this.closeMenu);
+    document.body.removeEventListener("click", this.logout);
   },
 };
 </script>
 
 <style scoped>
 .navbar {
-  background-color: #333;
   position: fixed;
   top: 0;
   width: 100%;

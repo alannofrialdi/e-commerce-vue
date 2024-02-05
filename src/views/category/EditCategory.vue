@@ -1,35 +1,35 @@
 <template>
   <div
-    id="add-category"
-    class="flex flex-col justify-center items-center mt-24 mx-auto"
+    id="edit-category"
+    class="flex flex-col justify-center items-center mx-auto"
   >
-    <h1 class="text-center mb-4 text-2xl">Add Category</h1>
+    <h1 class="text-center mb-4 text-2xl">Edit Category</h1>
     <form
       class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-xs"
     >
       <div class="">
         <div class="form-group mb-4">
-          <label for="name" class="block">Category Name</label>
+          <label for="name" class="block">Name</label>
           <input
             type="text"
             name="name"
             id="name"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            v-model="category.name"
+            v-model="category.categoryName"
           />
         </div>
         <div class="form-group mb-4">
-          <label for="description" class="block">Category Description</label>
+          <label for="description" class="block">Description</label>
           <textarea
             type="text"
             name="description"
             id="description"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            v-model="category.desc"
+            v-model="category.description"
           />
         </div>
         <div class="form-group mb-4">
-          <label for="image" class="block">Category Image</label>
+          <label for="image" class="block">Image</label>
           <input
             type="text"
             name="image"
@@ -38,10 +38,11 @@
             v-model="category.imageUrl"
           />
         </div>
+
         <button
           type="button"
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-          @click="addCategory"
+          @click="editCategory"
         >
           Submit
         </button>
@@ -52,47 +53,46 @@
 
 <script>
 import axios from "axios";
-import sweetAlert from "sweetalert";
+import swal from "sweetalert";
 
 export default {
-  name: "AddCategory",
+  props: ["endpoint", "categories"],
   data() {
     return {
-      category: {
-        name: "",
-        desc: "",
-        imageUrl: "",
-      },
+      category: null,
+      id: null,
     };
   },
   methods: {
-    addCategory() {
-      const newCategory = {
-        categoryName: this.category.name,
-        description: this.category.desc,
-        imageUrl: this.category.imageUrl,
-      };
-      const endpoint = "https://limitless-lake-55070.herokuapp.com/";
-
-      axios({
-        method: "post",
-        url: `${endpoint}/category/create`,
-        data: JSON.stringify(newCategory),
-        headers: {
-          "Content-type": "application/json",
-        },
-      })
-        .then((res) => {
-          sweetAlert({
-            text: "Category added successfully",
-            icon: "success",
-          });
-          console.log(res);
-        })
-        .catch((err) => console.log(err));
+    async editCategory() {
+      try {
+        delete this.category["products"];
+        console.log(this.category);
+        await axios.post(
+          `${this.endpoint}category/update/${this.id}`,
+          this.category
+        );
+        this.$emit("fetchData");
+        this.$router.push({ name: "show-category" });
+        swal({
+          text: "Updated",
+          icon: "success",
+        });
+      } catch (error) {
+        console.error(error);
+      }
     },
+  },
+  mounted() {
+    this.id = this.$route.params.id;
+    this.category = this.categories.find((category) => category.id === this.id);
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+#edit-category {
+  margin-top: 6.8rem;
+  margin-bottom: 6.8rem;
+}
+</style>

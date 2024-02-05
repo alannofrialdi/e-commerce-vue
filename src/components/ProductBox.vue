@@ -5,11 +5,29 @@
       :src="product.imageURL"
       :alt="product.name"
     />
-    <div class="p-6">
+    <div class="p-4">
       <h2 class="text-2xl font-semibold mb-2">{{ product.name }}</h2>
       <p class="text-gray-700">{{ product.description }}</p>
-      <div class="mt-4">
+      <div class="mt-2">
         <p class="text-gray-700 font-semibold">Price: ${{ product.price }}</p>
+      </div>
+      <div class="button flex gap-3">
+        <router-link :to="{ name: 'edit-product', params: { id: product.id } }">
+          <button
+            type="button"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 focus:outline-none focus:shadow-outline"
+          >
+            Edit
+          </button>
+        </router-link>
+        <router-link :to="{ name: 'show-detail', params: { id: product.id } }">
+          <button
+            type="button"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2 focus:outline-none focus:shadow-outline"
+          >
+            Detail
+          </button>
+        </router-link>
       </div>
     </div>
   </div>

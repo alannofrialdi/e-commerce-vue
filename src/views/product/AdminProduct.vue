@@ -4,7 +4,7 @@
     class="flex justify-items-center mt-20 flex-col items-center"
   >
     <h1 class="text-center my-2 text-2xl">Products</h1>
-    <router-link :to="{ name: 'add-category' }">
+    <router-link :to="{ name: 'add-product' }">
       <button
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
       >
