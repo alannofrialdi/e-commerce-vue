@@ -12,6 +12,7 @@ import SignIn from "../views/user/SignIn.vue";
 import Vue from "vue";
 import VueRouter from "vue-router";
 import WishList from "../views/product/WishList.vue";
+import ShowCart from "../views/product/ShowCart.vue";
 
 Vue.use(VueRouter);
 
@@ -62,6 +63,11 @@ const routes = [
     path: "/product/detail/:id",
     name: "show-detail",
     component: ShowDetail,
+  },
+  {
+    path: "/cart",
+    name: "cart",
+    component: ShowCart,
   },
   // user
   {

@@ -15,7 +15,7 @@
     </div>
     <!-- content -->
     <div v-else>
-      <NavBar />
+      <NavBar :count="count" @resetCartCount="resetCartCount" />
       <router-view
         v-if="categories && products"
         :categories="categories"
@@ -40,6 +40,7 @@ export default {
       products: null,
       categories: null,
       load: true,
+      count: 0,
     };
   },
   methods: {
@@ -51,13 +52,23 @@ export default {
         const productsResponse = await axios.get(this.endpoint + "product/");
         this.products = productsResponse.data;
 
+        if (this.token) {
+          const cartCountResponse = await axios.get(
+            `${this.endpoint}/cart/?token=${this.token}`
+          );
+          this.count = cartCountResponse.data.cartItems.length;
+        }
         this.load = false;
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     },
+    resetCartCount() {
+      this.count = 0;
+    },
   },
   mounted() {
+    this.token = localStorage.getItem("token");
     this.fetchData();
   },
 };

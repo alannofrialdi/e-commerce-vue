@@ -62,17 +62,17 @@
         />
       </div>
     </div>
-    <div class="text-white flex gap-2">
+    <div class="text-white flex items-center gap-2 transition-all">
       <router-link
         :to="{ name: 'user-signup' }"
         v-if="!token"
-        class="hover:text-blue-400"
+        class="hover:bg-blue-500 bg-white rounded-sm text-black px-2 hover:text-white"
         >Sign Up</router-link
       >
       <router-link
         :to="{ name: 'user-signin' }"
         v-if="!token"
-        class="hover:text-blue-400"
+        class="hover:bg-blue-500 bg-white rounded-sm text-black px-2 hover:text-white"
         >Sign In</router-link
       >
 
@@ -85,16 +85,37 @@
       <button
         v-if="token && loggedIn"
         @click="logout"
-        class="hover:text-blue-400"
+        class="hover:bg-blue-500 bg-white rounded-sm text-black px-2 hover:text-white"
       >
         Logout
       </button>
+      <router-link
+        :to="{ name: 'cart' }"
+        class="flex items-center flex-row relative"
+      >
+        <span
+          class="bg-red-500 px-1 absolute rounded-full text-sm left-3 bottom-2"
+          >{{ count }}</span
+        >
+        <shopping-cart-icon
+          size="1.5x"
+          class="cursor-pointer hover:text-blue-400"
+        >
+        </shopping-cart-icon
+      ></router-link>
     </div>
   </div>
 </template>
 
 <script>
+import swal from "sweetalert";
+import { ShoppingCartIcon } from "vue-feather-icons";
+
 export default {
+  components: {
+    ShoppingCartIcon,
+  },
+  props: ["count"],
   data() {
     return {
       token: (this.token = localStorage.getItem("token")),
@@ -110,7 +131,7 @@ export default {
       const menu = this.$refs.menu;
       const adminButton = this.$refs.adminButton;
 
-      // Check click diluar button admin
+      // check click diluar button admin
       if (
         menu &&
         !menu.contains(event.target) &&
@@ -122,15 +143,19 @@ export default {
     logout() {
       localStorage.removeItem("token");
       this.loggedIn = false;
-      this.$router.go();
+      swal({
+        text: "logged out",
+        icon: "success",
+      });
+      this.$emit("resetCartCount");
+      setTimeout(() => {
+        this.$router.go();
+      }, 1500);
       return;
     },
   },
   mounted() {
     document.body.addEventListener("click", this.closeMenu);
-  },
-  beforeDestroy() {
-    this.logout();
   },
   destroyed() {
     document.body.removeEventListener("click", this.closeMenu);

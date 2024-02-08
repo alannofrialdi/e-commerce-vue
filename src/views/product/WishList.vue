@@ -1,5 +1,5 @@
 <template>
-  <div class="my-28">
+  <div class="my-28 max-h-max min-h-dvh">
     <div class="flex justify-between flex-col mx-4 items-center mb-4">
       <h1 class="text-3xl font-bold">Wishlist</h1>
       <div class="flex justify-center items-center gap-2 my-4">
@@ -28,18 +28,30 @@
         </button>
       </div>
     </div>
-    <!-- Display the wishlist -->
+    <!-- display the wishlist -->
+    <div
+      v-if="load"
+      class="flex flex-row gap-2 justify-center items-center mx-auto h-dvh"
+    >
+      <div class="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
+      <div
+        class="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"
+      ></div>
+      <div
+        class="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"
+      ></div>
+    </div>
     <div
       class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
     >
       <div
         v-for="(product, index) in products"
         :key="index"
-        class="rounded-lg overflow-hidden shadow-lg"
+        class="rounded-lg overflow-hidden bg-white shadow-lg"
       >
         <img
           :src="product.imageURL"
-          alt="Product Image"
+          :alt="product.name"
           class="w-full h-64 object-cover"
           v-if="!deleted"
         />
@@ -47,6 +59,16 @@
           <div class="font-bold text-xl mb-2">{{ product.name }}</div>
           <p class="text-gray-700 text-base">{{ product.description }}</p>
           <p class="text-gray-900 text-xl mt-2">${{ product.price }}</p>
+          <router-link
+            :to="{ name: 'show-detail', params: { id: product.id } }"
+          >
+            <button
+              type="button"
+              class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2 focus:outline-none focus:shadow-outline"
+            >
+              Detail
+            </button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -63,6 +85,7 @@ export default {
       token: null,
       products: [],
       deleted: false,
+      load: true,
     };
   },
   methods: {
@@ -70,6 +93,7 @@ export default {
       try {
         const res = await axios.get(`${this.endpoint}/wishlist/${this.token}`);
         this.products = res.data;
+        this.load = false;
       } catch (err) {
         console.error(err);
       }
